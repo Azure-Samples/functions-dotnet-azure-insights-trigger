@@ -1,0 +1,270 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "alertrules_SuccessfulViews_name": {
+            "defaultValue": "SuccessfulViews",
+            "type": "String"
+        },
+        "autoscalesettings_USWestPlan_OfficialAzureSamples_name": {
+            "defaultValue": "USWestPlan-OfficialAzureSamples",
+            "type": "String"
+        },
+        "components_productionwebappsample_name": {
+            "defaultValue": "productionwebappsample",
+            "type": "String"
+        },
+        "storageAccounts_officialazuresamples_name": {
+            "defaultValue": "officialazuresamples",
+            "type": "String"
+        },
+        "serverfarms_USWestPlan_name": {
+            "defaultValue": "USWestPlan",
+            "type": "String"
+        },
+        "serverfarms_WestUSPlan_name": {
+            "defaultValue": "WestUSPlan",
+            "type": "String"
+        },
+        "sites_productionwebappsample_name": {
+            "defaultValue": "productionwebappsample",
+            "type": "String"
+        },
+        "sites_OfficialAzureSamples_name": {
+            "defaultValue": "OfficialAzureSamples",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/alertrules",
+            "name": "[parameters('alertrules_SuccessfulViews_name')]",
+            "apiVersion": "2014-04-01",
+            "location": "westus",
+            "properties": {
+                "name": "[parameters('alertrules_SuccessfulViews_name')]",
+                "description": "",
+                "isEnabled": true,
+                "condition": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+                    "dataSource": {
+                        "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+                        "resourceUri": "[resourceId('Microsoft.Web/sites', parameters('sites_productionwebappsample_name'))]",
+                        "metricNamespace": "SDK",
+                        "metricName": "Http2xx"
+                    },
+                    "operator": "GreaterThanOrEqual",
+                    "threshold": 10,
+                    "windowSize": "PT5M"
+                }
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_productionwebappsample_name'))]"
+            ]
+        },
+        {
+            "type": "microsoft.insights/autoscalesettings",
+            "name": "[parameters('autoscalesettings_USWestPlan_OfficialAzureSamples_name')]",
+            "apiVersion": "2014-04-01",
+            "location": "westus",
+            "properties": {
+                "profiles": [
+                    {
+                        "name": "Default",
+                        "capacity": {
+                            "minimum": "1",
+                            "maximum": "2",
+                            "default": "1"
+                        },
+                        "rules": [
+                            {
+                                "metricTrigger": {
+                                    "metricName": "CpuPercentage",
+                                    "metricNamespace": "",
+                                    "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_USWestPlan_name'))]",
+                                    "timeGrain": "PT1M",
+                                    "statistic": "Average",
+                                    "timeWindow": "PT10M",
+                                    "timeAggregation": "Average",
+                                    "operator": "GreaterThan",
+                                    "threshold": 50
+                                },
+                                "scaleAction": {
+                                    "direction": "Increase",
+                                    "type": "ChangeCount",
+                                    "value": "1",
+                                    "cooldown": "PT5M"
+                                }
+                            },
+                            {
+                                "metricTrigger": {
+                                    "metricName": "CpuPercentage",
+                                    "metricNamespace": "",
+                                    "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_USWestPlan_name'))]",
+                                    "timeGrain": "PT1M",
+                                    "statistic": "Average",
+                                    "timeWindow": "PT10M",
+                                    "timeAggregation": "Average",
+                                    "operator": "LessThan",
+                                    "threshold": 10
+                                },
+                                "scaleAction": {
+                                    "direction": "Decrease",
+                                    "type": "ChangeCount",
+                                    "value": "1",
+                                    "cooldown": "PT5M"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "enabled": true,
+                "name": "[parameters('autoscalesettings_USWestPlan_OfficialAzureSamples_name')]",
+                "targetResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_USWestPlan_name'))]"
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_USWestPlan_name'))]"
+            ]
+        },
+        {
+            "type": "microsoft.insights/components",
+            "kind": "web",
+            "name": "[parameters('components_productionwebappsample_name')]",
+            "apiVersion": "2014-04-01",
+            "location": "Central US",
+            "properties": {
+                "ApplicationId": "[parameters('components_productionwebappsample_name')]"
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_officialazuresamples_name')]",
+            "apiVersion": "2016-01-01",
+            "location": "westus",
+            "tags": {},
+            "properties": {},
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "size": "S1",
+                "family": "S",
+                "capacity": 1
+            },
+            "name": "[parameters('serverfarms_USWestPlan_name')]",
+            "apiVersion": "2015-08-01",
+            "location": "West US",
+            "properties": {
+                "name": "[parameters('serverfarms_USWestPlan_name')]",
+                "numberOfWorkers": 1
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "sku": {
+                "name": "Y1",
+                "tier": "Dynamic",
+                "size": "Y1",
+                "family": "Y",
+                "capacity": 0
+            },
+            "kind": "functionapp",
+            "name": "[parameters('serverfarms_WestUSPlan_name')]",
+            "apiVersion": "2015-08-01",
+            "location": "West US",
+            "properties": {
+                "name": "[parameters('serverfarms_WestUSPlan_name')]",
+                "numberOfWorkers": 0
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "name": "[parameters('sites_productionwebappsample_name')]",
+            "apiVersion": "2015-08-01",
+            "location": "West US",
+            "properties": {
+                "name": "[parameters('sites_productionwebappsample_name')]",
+                "hostNames": [
+                    "productionwebappsample.azurewebsites.net"
+                ],
+                "enabledHostNames": [
+                    "productionwebappsample.azurewebsites.net",
+                    "productionwebappsample.scm.azurewebsites.net"
+                ],
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_productionwebappsample_name'),'.azurewebsites.net')]",
+                        "sslState": 0,
+                        "thumbprint": null,
+                        "ipBasedSslState": 0
+                    },
+                    {
+                        "name": "[concat(parameters('sites_productionwebappsample_name'),'.scm.azurewebsites.net')]",
+                        "sslState": 0,
+                        "thumbprint": null,
+                        "ipBasedSslState": 0
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_USWestPlan_name'))]"
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_USWestPlan_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "kind": "functionapp",
+            "name": "[parameters('sites_OfficialAzureSamples_name')]",
+            "apiVersion": "2015-08-01",
+            "location": "West US",
+            "properties": {
+                "name": "[parameters('sites_OfficialAzureSamples_name')]",
+                "hostNames": [
+                    "officialazuresamples.azurewebsites.net"
+                ],
+                "enabledHostNames": [
+                    "officialazuresamples.azurewebsites.net",
+                    "officialazuresamples.scm.azurewebsites.net"
+                ],
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_OfficialAzureSamples_name'),'officialazuresamples.azurewebsites.net')]",
+                        "sslState": 0,
+                        "thumbprint": null,
+                        "ipBasedSslState": 0
+                    },
+                    {
+                        "name": "[concat(parameters('sites_OfficialAzureSamples_name'),'officialazuresamples.scm.azurewebsites.net')]",
+                        "sslState": 0,
+                        "thumbprint": null,
+                        "ipBasedSslState": 0
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_WestUSPlan_name'))]"
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_WestUSPlan_name'))]"
+            ]
+        }
+    ]
+}
