@@ -8,7 +8,10 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     dynamic data = await req.Content.ReadAsAsync<object>();
 
     // Gets the name of the resource from the Auto-Scale event.
-    name = data?.context?.resourceName.ToString(); 
+    name = data?.context?.resourceName.ToString();
+    operation = data?.operation;
+
+    log.Info($"Resource: '{name}' is performing a {operation} operation.")
 
     return name == null
         ? req.CreateResponse(HttpStatusCode.BadRequest, "This is not a valid auto-scale payload.")
