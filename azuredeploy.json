@@ -137,7 +137,7 @@
             "kind": "web",
             "name": "[variables('appinsights_components_name')]",
             "apiVersion": "2014-04-01",
-            "location": "[parameters('location')]",
+            "location": "Central US",
             "properties": {
                 "ApplicationId": "[variables('appinsights_components_name')]"
             }
