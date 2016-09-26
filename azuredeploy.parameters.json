@@ -2,29 +2,8 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "alertrules_SuccessfulViews_name": {
-            "value": null
-        },
-        "autoscalesettings_USWestPlan_OfficialAzureSamples_name": {
-            "value": null
-        },
-        "components_productionwebappsample_name": {
-            "value": null
-        },
-        "storageAccounts_officialazuresamples_name": {
-            "value": null
-        },
-        "serverfarms_USWestPlan_name": {
-            "value": null
-        },
-        "serverfarms_WestUSPlan_name": {
-            "value": null
-        },
-        "sites_productionwebappsample_name": {
-            "value": null
-        },
-        "sites_OfficialAzureSamples_name": {
-            "value": null
+        "siteName": {
+            "value": "azureinsighttrigger"
         }
     }
 }
