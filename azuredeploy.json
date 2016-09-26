@@ -64,7 +64,6 @@
                     "windowSize": "PT5M"
                 }
             },
-            "resources": [],
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', parameters('siteName'))]"
             ]
@@ -129,7 +128,6 @@
                 "name": "[variables('autoscale_settings_name')]",
                 "targetResourceUri": "[resourceId('Microsoft.Web/serverfarms', variables ('webapp_standard_asp'))]"
             },
-            "resources": [],
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('webapp_standard_asp'))]"
             ]
@@ -142,9 +140,7 @@
             "location": "[parameters('location')]",
             "properties": {
                 "ApplicationId": "[variables('appinsights_components_name')]"
-            },
-            "resources": [],
-            "dependsOn": []
+            }
         },
         {
             "type": "Microsoft.Storage/storageAccounts",
@@ -155,11 +151,7 @@
             "kind": "Storage",
             "name": "[variables('storage_account_name')]",
             "apiVersion": "2016-01-01",
-            "location": "[parameters('location')]",
-            "tags": {},
-            "properties": {},
-            "resources": [],
-            "dependsOn": []
+            "location": "[parameters('location')]"
         },
         {
             "type": "Microsoft.Web/serverfarms",
@@ -175,9 +167,7 @@
             "location": "[parameters('location')]",
             "properties": {
                 "name": "[variables('webapp_standard_asp')]"
-            },
-            "resources": [],
-            "dependsOn": []
+            }
         },
         {
             "type": "Microsoft.Web/serverfarms",
@@ -194,9 +184,7 @@
             "location": "[parameters('location')]",
             "properties": {
                 "name": "[variables('functions_dynamic_asp')]"
-            },
-            "resources": [],
-            "dependsOn": []
+            }
         },
         {
             "type": "Microsoft.Web/sites",
@@ -265,9 +253,9 @@
                     ]
                 }
             },
-            "resources": [],
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('functions_dynamic_asp'))]"
+                "[resourceId('Microsoft.Web/serverfarms', variables('functions_dynamic_asp'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storage_account_name'))]"
             ]
         }
     ]
