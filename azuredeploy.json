@@ -228,11 +228,11 @@
                     "appSettings": [
                         {
                             "name": "AzureWebJobsDashboard",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2015-05-01').key1)]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2016-01-01').keys[0])]"
                         },
                         {
                             "name": "AzureWebJobsStorage",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2015-05-01').key1)]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2016-01-01').keys[0])]"
                         },
                         {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
@@ -240,7 +240,7 @@
                         },
                         {
                             "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-                            "vlaue": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2015-05-01').key1)]"
+                            "vlaue": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2016-01-01').keys[0])]"
                         },
                         {
                             "name": "WEBSITE_CONTENTSHARE",
@@ -248,7 +248,7 @@
                         },
                         {
                             "name": "[concat(variables('storage_account_name'), '_STORAGE')]",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2015-05-01').key1)]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2016-01-01').keys[0])]"
                         }
                     ]
                 }
