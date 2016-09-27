@@ -39,7 +39,8 @@
         "autoscale_settings_name": "[parameters('siteName')]",
         "autoscale_min_threshold": 10,
         "autoscale_max_threshold": 50,
-        "appinsights_components_name": "[concat(parameters('siteName'), '-appinsights')]"
+        "appinsights_components_name": "[concat(parameters('siteName'), '-appinsights')]",
+        "named_storage_name": "[concat(variables('storage_account_name'), '_STORAGE')]"
     },
     "resources": [
         {
@@ -167,7 +168,10 @@
             "location": "[parameters('location')]",
             "properties": {
                 "name": "[variables('webapp_standard_asp')]"
-            }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('functions_dynamic_asp'))]"
+            ]
         },
         {
             "type": "Microsoft.Web/serverfarms",
@@ -247,7 +251,7 @@
                             "value": "[variables('storage_account_name')]"
                         },
                         {
-                            "name": "[concat(variables('storage_account_name'), '_STORAGE')]",
+                            "name": "[variables('named_storage_name')]",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2016-01-01').keys[0])]"
                         }
                     ]
