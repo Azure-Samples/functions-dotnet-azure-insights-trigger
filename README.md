@@ -41,7 +41,7 @@ This walkthrough will outline how to re-create the deployed version of the appli
 
 Run the command below, then sign in via the login screen popup.
 
-        func login
+   ```func login```
 
 #### Creating a new Azure Function Locally
 
