@@ -30,6 +30,8 @@
         }
     },
     "variables": {
+        "webapp_alert-2xx": "[concat(parameters('siteName'), '-alertrules')]",
+        "webapp_alert_threshold": 10,
         "webapp_standard_asp": "[concat(parameters('siteName'), '-standard')]",
         "functions_dynamic_asp": "[concat(parameters('siteName'), '-dynamic')]",
         "functions_site_name": "[concat(parameters('siteName'), '-functions')]",
@@ -37,10 +39,35 @@
         "autoscale_settings_name": "[parameters('siteName')]",
         "autoscale_min_threshold": 10,
         "autoscale_max_threshold": 50,
-        "appinsights_components_name": "[concat(parameters('siteName'), '-appinsights')]",
-        "named_storage_name": "[concat(variables('storage_account_name'), '_STORAGE')]"
+        "appinsights_components_name": "[concat(parameters('siteName'), '-appinsights')]"
     },
     "resources": [
+        {
+            "type": "microsoft.insights/alertrules",
+            "name": "[variables('webapp_alert-2xx')]",
+            "apiVersion": "2014-04-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "name": "[variables('webapp_alert-2xx')]",
+                "description": "",
+                "isEnabled": true,
+                "condition": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+                    "dataSource": {
+                        "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+                        "resourceUri": "[resourceId('Microsoft.Web/sites', parameters('siteName'))]",
+                        "metricNamespace": "SDK",
+                        "metricName": "Http2xx"
+                    },
+                    "operator": "GreaterThanOrEqual",
+                    "threshold": "[variables('webapp_alert_threshold')]",
+                    "windowSize": "PT5M"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('siteName'))]"
+            ]
+        },
         {
             "type": "microsoft.insights/autoscalesettings",
             "name": "[variables('autoscale_settings_name')]",
@@ -203,28 +230,28 @@
                 "siteConfig": {
                     "appSettings": [
                         {
-                            "name": "AzureWebJobsDashboard",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2016-01-01').keys[0])]"
-                        },
-                        {
-                            "name": "AzureWebJobsStorage",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2016-01-01').keys[0])]"
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[variables('storage_account_name')]"
                         },
                         {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
                             "value": "latest"
                         },
                         {
+                            "name": "[concat(variables('storage_account_name'), '_STORAGE')]",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'),'2015-05-01-preview').key1)]"
+                        },
+                                                {
+                            "name": "AzureWebJobsDashboard",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'),'2015-05-01-preview').key1)]"
+                        },
+                        {
                             "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-                            "vlaue": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2016-01-01').keys[0])]"
-                        },
-                        {
-                            "name": "WEBSITE_CONTENTSHARE",
-                            "value": "[variables('storage_account_name')]"
-                        },
-                        {
-                            "name": "[variables('named_storage_name')]",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2016-01-01').keys[0])]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'),'2015-05-01-preview').key1)]"
                         }
                     ]
                 }
