@@ -30,8 +30,6 @@
         }
     },
     "variables": {
-        "webapp_alert-2xx": "[concat(parameters('siteName'), '-alertrules')]",
-        "webapp_alert_threshold": 10,
         "webapp_standard_asp": "[concat(parameters('siteName'), '-standard')]",
         "functions_dynamic_asp": "[concat(parameters('siteName'), '-dynamic')]",
         "functions_site_name": "[concat(parameters('siteName'), '-functions')]",
@@ -43,32 +41,6 @@
         "named_storage_name": "[concat(variables('storage_account_name'), '_STORAGE')]"
     },
     "resources": [
-        {
-            "type": "microsoft.insights/alertrules",
-            "name": "[variables('webapp_alert-2xx')]",
-            "apiVersion": "2014-04-01",
-            "location": "[parameters('location')]",
-            "properties": {
-                "name": "[variables('webapp_alert-2xx')]",
-                "description": "",
-                "isEnabled": true,
-                "condition": {
-                    "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
-                    "dataSource": {
-                        "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
-                        "resourceUri": "[resourceId('Microsoft.Web/sites', parameters('siteName'))]",
-                        "metricNamespace": "SDK",
-                        "metricName": "Http2xx"
-                    },
-                    "operator": "GreaterThanOrEqual",
-                    "threshold": "[variables('webapp_alert_threshold')]",
-                    "windowSize": "PT5M"
-                }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('siteName'))]"
-            ]
-        },
         {
             "type": "microsoft.insights/autoscalesettings",
             "name": "[variables('autoscale_settings_name')]",
