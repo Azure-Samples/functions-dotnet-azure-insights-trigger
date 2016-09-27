@@ -108,15 +108,15 @@ You've now created your first Azure Function, you are ready to commit the code a
 
 1. Run the following commands from the command line:
 
-        git add -A; git commit -m "initial commit"
+   ```git add -A; git commit -m "initial commit"```
 
 1. Add the GitHub remote
 
-        git remote add origin <github-repository-url>
+   ```git remote add origin <github-repository-url>```
 
 1. Push the code to GitHub
 
-        git push origin master
+   ```git push origin master```
 
 ### Building the Infrastructure
 
@@ -124,7 +124,7 @@ You've now created your first Azure Function, you are ready to commit the code a
 
 1. From the command line run the following command:
 
-        func new functionApp myFuncApp [--subscription <subscriptionId>]
+   ```func new functionApp myFuncApp [--subscription <subscriptionId>]```
 
 1. Navigate to the [Azure Functions Portal](https://functions.azure.com/signin), and sign into your account
 1. Find and *Click* on **App Services** from the left-hand menu
