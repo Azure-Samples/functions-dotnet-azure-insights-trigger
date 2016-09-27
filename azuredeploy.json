@@ -241,7 +241,7 @@
                             "name": "[concat(variables('storage_account_name'), '_STORAGE')]",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'),'2015-05-01-preview').key1)]"
                         },
-                                                {
+                        {
                             "name": "AzureWebJobsDashboard",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'),'2015-05-01-preview').key1)]"
                         },
