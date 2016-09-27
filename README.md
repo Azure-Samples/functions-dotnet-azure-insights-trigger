@@ -41,7 +41,7 @@ This walkthrough will outline how to re-create the deployed version of the appli
 
 Run the command below, then sign in via the login screen popup.
 
-        func login
+   ```func login```
 
 #### Creating a new Azure Function Locally
 
@@ -108,15 +108,15 @@ You've now created your first Azure Function, you are ready to commit the code a
 
 1. Run the following commands from the command line:
 
-        git add -A; git commit -m "initial commit"
+   ```git add -A; git commit -m "initial commit"```
 
 1. Add the GitHub remote
 
-        git remote add origin <github-repository-url>
+   ```git remote add origin <github-repository-url>```
 
 1. Push the code to GitHub
 
-        git push origin master
+   ```git push origin master```
 
 ### Building the Infrastructure
 
@@ -124,14 +124,14 @@ You've now created your first Azure Function, you are ready to commit the code a
 
 1. From the command line run the following command:
 
-        func new functionApp myFuncApp [--subscription <subscriptionId>]
+   ```func new functionApp myFuncApp [--subscription <subscriptionId>]```
 
 1. Navigate to the [Azure Functions Portal](https://functions.azure.com/signin), and sign into your account
 1. Find and *Click* on **App Services** from the left-hand menu
 1. Click on **myFuncApp** in the App Services listing blade
 1. Click on the **Function app settings** link at the bottom of the Function App blade
 1. Click on **Configure continous integration**
-1. Follow these steps on [setting up continuous integration] (https://azure.microsoft.com/en-us/documentation/articles/app-service-continous-deployment/) under *Enable continuous deployment*
+1. Follow these steps on [setting up continuous integration] (https://azure.microsoft.com/en-us/documentation/articles/app-service-continous-deployment) under *Enable continuous deployment*
 
 #### Create an App Service Web App
 

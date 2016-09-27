@@ -9,14 +9,14 @@
             "defaultValue": "[resourceGroup().location]",
             "type": "string",
             "allowedValues": [
-                "Brazil South",
-                "East US",
-                "East US 2",
-                "Central US",
-                "North Central US",
-                "South Central US",
-                "West US",
-                "West US 2"
+                "brazilsouth",
+                "eastus",
+                "eastus2",
+                "centralus",
+                "northcentralus",
+                "southcentralus",
+                "westus",
+                "westus2"
             ]
         },
         "repoUrl": {
@@ -30,8 +30,6 @@
         }
     },
     "variables": {
-        "webapp_alert-2xx": "[concat(parameters('siteName'), '-alertrules')]",
-        "webapp_alert_threshold": 10,
         "webapp_standard_asp": "[concat(parameters('siteName'), '-standard')]",
         "functions_dynamic_asp": "[concat(parameters('siteName'), '-dynamic')]",
         "functions_site_name": "[concat(parameters('siteName'), '-functions')]",
@@ -42,33 +40,6 @@
         "appinsights_components_name": "[concat(parameters('siteName'), '-appinsights')]"
     },
     "resources": [
-        {
-            "type": "microsoft.insights/alertrules",
-            "name": "[variables('webapp_alert-2xx')]",
-            "apiVersion": "2014-04-01",
-            "location": "[parameters('location')]",
-            "properties": {
-                "name": "[variables('webapp_alert-2xx')]",
-                "description": "",
-                "isEnabled": true,
-                "condition": {
-                    "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
-                    "dataSource": {
-                        "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
-                        "resourceUri": "[resourceId('Microsoft.Web/sites', parameters('siteName'))]",
-                        "metricNamespace": "SDK",
-                        "metricName": "Http2xx"
-                    },
-                    "operator": "GreaterThanOrEqual",
-                    "threshold": "[variables('webapp_alert_threshold')]",
-                    "windowSize": "PT5M"
-                }
-            },
-            "resources": [],
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('siteName'))]"
-            ]
-        },
         {
             "type": "microsoft.insights/autoscalesettings",
             "name": "[variables('autoscale_settings_name')]",
@@ -129,7 +100,6 @@
                 "name": "[variables('autoscale_settings_name')]",
                 "targetResourceUri": "[resourceId('Microsoft.Web/serverfarms', variables ('webapp_standard_asp'))]"
             },
-            "resources": [],
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('webapp_standard_asp'))]"
             ]
@@ -142,9 +112,7 @@
             "location": "[parameters('location')]",
             "properties": {
                 "ApplicationId": "[variables('appinsights_components_name')]"
-            },
-            "resources": [],
-            "dependsOn": []
+            }
         },
         {
             "type": "Microsoft.Storage/storageAccounts",
@@ -155,11 +123,7 @@
             "kind": "Storage",
             "name": "[variables('storage_account_name')]",
             "apiVersion": "2016-01-01",
-            "location": "[parameters('location')]",
-            "tags": {},
-            "properties": {},
-            "resources": [],
-            "dependsOn": []
+            "location": "[parameters('location')]"
         },
         {
             "type": "Microsoft.Web/serverfarms",
@@ -176,8 +140,9 @@
             "properties": {
                 "name": "[variables('webapp_standard_asp')]"
             },
-            "resources": [],
-            "dependsOn": []
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('functions_dynamic_asp'))]"
+            ]
         },
         {
             "type": "Microsoft.Web/serverfarms",
@@ -194,9 +159,7 @@
             "location": "[parameters('location')]",
             "properties": {
                 "name": "[variables('functions_dynamic_asp')]"
-            },
-            "resources": [],
-            "dependsOn": []
+            }
         },
         {
             "type": "Microsoft.Web/sites",
@@ -209,21 +172,6 @@
                     "alwaysOn": true
                 }
             },
-            "resources": [
-                {
-                    "apiVersion": "2015-04-01",
-                    "name": "web",
-                    "type": "sourcecontrols",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
-                    ],
-                    "properties": {
-                        "RepoUrl": "[parameters('repoUrl')]",
-                        "branch": "[parameters('branch')]",
-                        "IsManualIntegration": true
-                    }
-                }
-            ],
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('webapp_standard_asp'))]"
             ]
@@ -239,35 +187,54 @@
                 "siteConfig": {
                     "appSettings": [
                         {
-                            "name": "AzureWebJobsDashboard",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2015-05-01').key1)]"
-                        },
-                        {
-                            "name": "AzureWebJobsStorage",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2015-05-01').key1)]"
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[variables('storage_account_name')]"
                         },
                         {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
                             "value": "latest"
                         },
                         {
-                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-                            "vlaue": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2015-05-01').key1)]"
-                        },
-                        {
-                            "name": "WEBSITE_CONTENTSHARE",
-                            "value": "[variables('storage_account_name')]"
+                            "name": "PROJECT",
+                            "value": "src"
                         },
                         {
                             "name": "[concat(variables('storage_account_name'), '_STORAGE')]",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'), '2015-05-01').key1)]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "AzureWebJobsDashboard",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storage_account_name'), ';AccountKey=', listKeys(variables('storage_account_name'),'2015-05-01-preview').key1)]"
                         }
                     ]
                 }
             },
-            "resources": [],
+            "resources": [
+                {
+                    "apiVersion": "2015-04-01",
+                    "name": "web",
+                    "type": "sourcecontrols",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('functions_site_name'))]"
+                    ],
+                    "properties": {
+                        "RepoUrl": "[parameters('repoUrl')]",
+                        "branch": "[parameters('branch')]",
+                        "IsManualIntegration": true
+                    }
+                }
+            ],
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('functions_dynamic_asp'))]"
+                "[resourceId('Microsoft.Web/serverfarms', variables('functions_dynamic_asp'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storage_account_name'))]"
             ]
         }
     ]

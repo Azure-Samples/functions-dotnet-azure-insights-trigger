@@ -3,7 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "siteName": {
-            "value": "azureinsighttrigger"
+            "value": "AzureInsightTriggeredFunction"
+        },
+        "repoUrl": {
+            "value": "https://github.com/Azure-Samples/functions-dotnet-azure-insights-trigger.git"
+        },
+        "branch": {
+            "value": "master"
         }
     }
 }
