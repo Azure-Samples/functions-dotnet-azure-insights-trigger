@@ -131,7 +131,7 @@ You've now created your first Azure Function, you are ready to commit the code a
 1. Click on **myFuncApp** in the App Services listing blade
 1. Click on the **Function app settings** link at the bottom of the Function App blade
 1. Click on **Configure continous integration**
-1. Follow these steps on [setting up continuous integration] (https://azure.microsoft.com/en-us/documentation/articles/app-service-continous-deployment/) under *Enable continuous deployment*
+1. Follow these steps on [setting up continuous integration] (https://azure.microsoft.com/en-us/documentation/articles/app-service-continous-deployment) under *Enable continuous deployment*
 
 #### Create an App Service Web App
 
